@@ -1,0 +1,37 @@
+services:
+    app:
+        build: .
+        ports:
+            - "8080:8080"
+        depends_on:
+            db:
+                condition: service_healthy
+        environment:
+            - PORT=8080
+            - DB_HOST=db
+            - DB_PORT=5432
+            - DB_USERNAME=${POSTGRES_USER:-postgres}
+            - DB_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+            - DB_DATABASE=${POSTGRES_DB:-swift_codes_db}
+            - DATA_DIR=/app/data
+        volumes:
+            - ./data:/app/data
+
+    db:
+        image: postgres:14-alpine
+        ports:
+            - "5432:5432"
+        environment:
+            - POSTGRES_USER=${POSTGRES_USER:-postgres}
+            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+            - POSTGRES_DB=${POSTGRES_DB:-swift_codes_db}
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U postgres"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+
+volumes:
+    postgres_data:
