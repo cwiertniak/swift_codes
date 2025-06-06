@@ -92,7 +92,7 @@ POST /v1/swift-codes
   "bankName": string,
   "countryISO2": string,
   "countryName": string,
-  “isHeadquarter”: bool,
+  "isHeadquarter": bool,
   "swiftCode": string,
 }
 ```
